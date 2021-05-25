@@ -38,6 +38,20 @@ namespace FaceRecogintion_Database
 			}
 			return false;
 		}
+		public static void DeleteStudent(Student newStudent)
+		{
+			string cmdString = $"delete FROM studentsdb.students where id=@id;";
+			MySqlCommand cmd = new MySqlCommand(cmdString, DBConnection.conn);
+			cmd.Parameters.Add("@id", MySqlDbType.Int32);			
+			cmd.Parameters["@id"].Value = newStudent.ID;
+			MySqlDataReader myReader;
+			myReader = cmd.ExecuteReader();
+			MessageBox.Show("Student Deleted");
+			while (myReader.Read())
+			{
+			}
+			myReader.Close();
+		}
 
 		public static List<Student> SelectStudents()
 		{

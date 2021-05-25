@@ -65,10 +65,18 @@ namespace FaceRecognition_Database.Views
 		{
 			FoundFaces.Clear();
 			LoadDB();
-			Image<Bgr, Byte> windowImage;
+			Image<Bgr, Byte> windowImage = null;
 			if ((sender as Button).Name == "btnFindFaceDesktop") windowImage = ScreenCapture.GetDesktopImage().ToImage<Bgr,Byte>();
-			else windowImage = (ScreenCapture.GetWindowCaptureAsBitmap(cbWindows.SelectedValue.ToString()).ToImage<Bgr, byte>());
-
+			else
+				try
+				{
+					if (cbWindows.SelectedItem != null)
+					windowImage = (ScreenCapture.GetWindowCaptureAsBitmap(cbWindows.SelectedValue.ToString()).ToImage<Bgr, byte>());
+				}
+				catch (Exception exception)
+				{
+					MessageBox.Show(exception.Message);
+				}
 
 			if (windowImage != null)
 			{
@@ -119,18 +127,14 @@ namespace FaceRecognition_Database.Views
 					{
 						Image<Gray, byte> recogFace = selectedFace.Resize(100, 100, Inter.Cubic);
 						FaceRecognizer.PredictionResult result = Recognizer.Predict(recogFace);
-						//List<Student> lookAlikes = new List<Student>();
-						//foreach (Student student in StudentsDB)
-						//{
-						//	if(result.Label == )
-						//}
 						try
 						{
 							FaceName = StudentsDB.First(x => x.ID == result.Label && result.Distance < 500).Surname;
 						}
 						catch (Exception ex)
 						{
-							FaceName = $"{StudentsDB.First(x => x.ID == result.Label ).Surname} | {result.Distance}";
+							//FaceName = $"{StudentsDB.First(x => x.ID == result.Label).Surname} | {result.Distance}";
+							FaceName = $"Возможно это: {StudentsDB.First(x => x.ID == result.Label ).Surname}";
 							//FaceName = "Not in the Base";
 						}
 					}
@@ -144,7 +148,7 @@ namespace FaceRecognition_Database.Views
 			}
 		}
 
-		private void LoadDB()
+		public void LoadDB()
 		{
 			StudentsDB = new List<Student>();
 			try
@@ -155,7 +159,8 @@ namespace FaceRecognition_Database.Views
 			{
 				MessageBox.Show(ex.Message);
 			}
-			int i = 0;
+
+			FillDataBaseDP();
 			FacesDB = new VectorOfMat(StudentsDB.Count);
 			FacesDBIDs = new VectorOfInt(StudentsDB.Count);
 			FacesDB.Clear(); FacesDBIDs.Clear();
@@ -165,16 +170,21 @@ namespace FaceRecognition_Database.Views
 				FacesDBIDs.Push(new []{student.ID});
 			}
 			Recognizer = new EigenFaceRecognizer(StudentsDB.Count);
-			//debug
-			//foreach (Student student in StudentsDB)
-			//{
-			//	Window wnd = new Window()
-			//		{Content = new Image {Source = BitmapToImageSource.Get(student.Photo.ToBitmap())}};
-			//	wnd.Show();
-			//}
 
 			if (StudentsDB.Count>0)
 			Recognizer.Train(FacesDB, FacesDBIDs);
+		}
+
+		private void FillDataBaseDP()
+		{
+			dpDataBase.Children.Clear();
+			foreach (Student student in StudentsDB)
+			{
+				StudentControl sc = new StudentControl(this, student);
+				DockPanel.SetDock(sc, Dock.Top);
+				dpDataBase.Children.Add(sc);
+			}
+			
 		}
 
 		private void BtnPrevFace_OnClick(object sender, RoutedEventArgs e)
@@ -184,9 +194,16 @@ namespace FaceRecognition_Database.Views
 			if (index == 0) index = numOfFaces - 1;
 			else index--;
 			UpdateNumberOfFaces(index+1, numOfFaces);
-			SelectedFace = FoundFaces[index];
-			imgFoundPhoto.Source = BitmapToImageSource.Get(SelectedFace.ToBitmap());
-			FaceRecognition(SelectedFace);
+			if (FoundFaces.Count != 0)
+			{
+				SelectedFace = FoundFaces[index];
+				imgFoundPhoto.Source = BitmapToImageSource.Get(SelectedFace.ToBitmap());
+				FaceRecognition(SelectedFace);
+			}
+			else
+			{
+				imgFoundPhoto.Source = null;
+			}
 			lblFaceName.Content = FaceName;
 		}
 
@@ -197,9 +214,16 @@ namespace FaceRecognition_Database.Views
 			if (index == numOfFaces-1) index = 0;
 			else index++;
 			UpdateNumberOfFaces(index+1, numOfFaces);
-			SelectedFace = FoundFaces[index];
-			imgFoundPhoto.Source = BitmapToImageSource.Get(SelectedFace.ToBitmap());
-			FaceRecognition(SelectedFace);
+			if (FoundFaces.Count != 0)
+			{
+				SelectedFace = FoundFaces[index];
+				imgFoundPhoto.Source = BitmapToImageSource.Get(SelectedFace.ToBitmap());
+				FaceRecognition(SelectedFace);
+			}
+			else
+			{
+				imgFoundPhoto.Source = null;
+			}
 			lblFaceName.Content = FaceName;
 		}
 
@@ -221,8 +245,6 @@ namespace FaceRecognition_Database.Views
 					if(SQLCommands.InsertStudent(windowAddFace.NewStudent))
 						MessageBox.Show("Лицо добавлено в базу");
 					LoadDB();
-					//обновить StudentsDB из базы
-					//	throw;
 				}
 			
 			}
@@ -235,7 +257,6 @@ namespace FaceRecognition_Database.Views
 		private int GetUniqueId(VectorOfInt facesDBIDs)
 		{
 			List<int> list = new List<int>();
-			int i = 0;
 			for (int j = 0; j < facesDBIDs.Size; j++)
 			{
 				list.Add(facesDBIDs[j]);
