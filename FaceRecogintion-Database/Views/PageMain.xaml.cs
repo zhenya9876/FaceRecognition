@@ -107,7 +107,7 @@ namespace FaceRecognition_Database.Views
 		{
 			lblNumOfFaces.Content = $"{index} из {count}";
 		}
-		private void FaceRecognition(Image<Gray,Byte> selectedFace)
+		private FaceRecognizer.PredictionResult FaceRecognition(Image<Gray,Byte> selectedFace)
 		{
 			if (FoundFaces.Count > 0)
 			{
@@ -119,28 +119,35 @@ namespace FaceRecognition_Database.Views
 					{
 						Image<Gray, byte> recogFace = selectedFace.Resize(100, 100, Inter.Cubic);
 						FaceRecognizer.PredictionResult result = Recognizer.Predict(recogFace);
-						//List<Student> lookAlikes = new List<Student>();
-						//foreach (Student student in StudentsDB)
+						return result;
+						//try
 						//{
-						//	if(result.Label == )
+						//	FaceName = StudentsDB.First(x => x.ID == result.Label && result.Distance < 500).Surname;
 						//}
-						try
-						{
-							FaceName = StudentsDB.First(x => x.ID == result.Label && result.Distance < 500).Surname;
-						}
-						catch (Exception ex)
-						{
-							FaceName = $"{StudentsDB.First(x => x.ID == result.Label ).Surname} | {result.Distance}";
-							//FaceName = "Not in the Base";
-						}
+						//catch (Exception ex)
+						//{
+						//	FaceName = $"{StudentsDB.First(x => x.ID == result.Label ).Surname} | {result.Distance}";
+						//	//FaceName = "Not in the Base";
+						//}
 					}
 
+					return new FaceRecognizer.PredictionResult();
 				}
 				imgFoundPhoto.Source = BitmapToImageSource.Get(selectedFace.ToBitmap());
 			}
 			else
 			{
-				FaceName = "Please Add Face";
+				FaceName = "Лиц на экране не найдено";
+				return new FaceRecognizer.PredictionResult();
+			}
+		}
+
+		private void MultipleFaceRecognition(List<Image<Gray, Byte>> foundFaces)
+		{
+			foreach (Image<Gray, Byte> face in foundFaces)
+			{
+				FaceRecognizer.PredictionResult prediction = FaceRecognition(face);
+				FoundFacesIDsLikeness.Add(prediction.Label, prediction.Distance);
 			}
 		}
 
@@ -186,8 +193,8 @@ namespace FaceRecognition_Database.Views
 			UpdateNumberOfFaces(index+1, numOfFaces);
 			SelectedFace = FoundFaces[index];
 			imgFoundPhoto.Source = BitmapToImageSource.Get(SelectedFace.ToBitmap());
-			FaceRecognition(SelectedFace);
-			lblFaceName.Content = FaceName;
+			FaceRecognizer.PredictionResult prediction = FaceRecognition(SelectedFace);
+			lblFaceName.Content = FoundFacesIDsLikeness[StudentsDB.First(x => x.ID == prediction.Label).ID];
 		}
 
 		private void BtnNextFace_OnClick(object sender, RoutedEventArgs e)
