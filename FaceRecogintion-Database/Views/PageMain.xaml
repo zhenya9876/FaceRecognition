@@ -1,0 +1,56 @@
+﻿<Page x:Class="FaceRecognition_Database.Views.PageMain"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FaceRecognition_Database.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="PageMain" Margin="16">
+
+        <TabControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <TabItem Header="Поиск лица" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <DockPanel LastChildFill="False" Margin="8">
+                        <Label DockPanel.Dock="Top">Выбор окна</Label>
+                            <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
+                        <ComboBox x:Name="cbWindows" DockPanel.Dock="Top"></ComboBox>
+                            <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
+                    <Button DockPanel.Dock="Top" x:Name="btnFindFace" Padding="8,4" Click="BtnFindFace_OnClick">Найти лица в выбранном окне</Button>
+                            <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
+                    <Button DockPanel.Dock="Top" x:Name="btnFindFaceDesktop" Padding="8,4" Click="BtnFindFace_OnClick">Найти лица на всём экране</Button>
+                            <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
+                        <Button DockPanel.Dock="Top" x:Name="btnAddFace" Padding="8,4" Click="BtnAddFace_OnClick">Добавить выбранное лицо</Button>
+                    </DockPanel>
+                <DockPanel Grid.Column="1" >
+                    <Label x:Name="lblNumOfFaces" DockPanel.Dock="Top" HorizontalAlignment="Center">0 из 0</Label>
+                    <!--<Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>-->
+                        
+                    
+                    <DockPanel Dock="Bottom">
+                        <Label x:Name="lblFaceName" DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18"/>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">
+                            <Button DockPanel.Dock="Top" x:Name="btnPrevFace" Padding="8,4" Margin="4" Click="BtnPrevFace_OnClick">Предыдущее</Button>
+                            <Button DockPanel.Dock="Top" x:Name="btnNextFace" Padding="8,4" Margin="4" Click="BtnNextFace_OnClick">Следующее</Button>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Image x:Name="imgFoundPhoto" 
+                           HorizontalAlignment="Center"
+                           Stretch="Uniform"/>
+                    <!--<Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>-->
+
+                </DockPanel>
+                    </Grid>
+            </TabItem>
+
+            <TabItem Header="База студентов"></TabItem>
+
+        </TabControl>
+
+    
+</Page>
