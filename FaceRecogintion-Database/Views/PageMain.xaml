@@ -16,21 +16,18 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <DockPanel LastChildFill="False" Margin="8" VerticalAlignment="Center">
-                        <Label DockPanel.Dock="Top">Выбор окна</Label>
+                    <Label DockPanel.Dock="Top">Поиск лиц на экране</Label>
                             <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
-                        <ComboBox x:Name="cbWindows" DockPanel.Dock="Top"></ComboBox>
+                        <!--<ComboBox x:Name="cbWindows" DockPanel.Dock="Top"></ComboBox>
                             <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
                     <Button DockPanel.Dock="Top" x:Name="btnFindFace" Padding="8,4" Click="BtnFindFace_OnClick">Найти лица в выбранном окне</Button>
-                            <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
+                            <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>-->
                     <Button DockPanel.Dock="Top" x:Name="btnFindFaceDesktop" Padding="8,4" Click="BtnFindFace_OnClick">Найти лица на всём экране</Button>
                             <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
                         <Button DockPanel.Dock="Top" x:Name="btnAddFace" Padding="8,4" Click="BtnAddFace_OnClick">Добавить выбранное лицо</Button>
                     </DockPanel>
                 <DockPanel Grid.Column="1" >
                     <Label x:Name="lblNumOfFaces" DockPanel.Dock="Top" HorizontalAlignment="Center">0 из 0</Label>
-                    <!--<Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>-->
-                        
-                    
                     <DockPanel Dock="Bottom">
                         <Label x:Name="lblFaceName" DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18"/>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center">

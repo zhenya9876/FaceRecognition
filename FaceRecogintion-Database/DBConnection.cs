@@ -69,24 +69,5 @@ namespace FaceRecognition_Database
             }
             return null;
         }
-
-        public int ExecuteNonQuery(string sql)
-        {
-            try
-            {
-                int affected;
-                MySqlTransaction mytransaction = conn.BeginTransaction();
-                MySqlCommand cmd = conn.CreateCommand();
-                cmd.CommandText = sql;
-                affected = cmd.ExecuteNonQuery();
-                mytransaction.Commit();
-                return affected;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            return -1;
-        }
 	}
 }

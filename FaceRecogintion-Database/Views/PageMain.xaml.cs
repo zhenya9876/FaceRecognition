@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Face;
@@ -19,9 +12,6 @@ using Emgu.CV.Util;
 using FaceRecogintion_Database;
 using FaceRecogintion_Database.Views;
 using FaceRecognition_Database.Models;
-using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Math.EC;
-using Image = System.Windows.Controls.Image;
 
 namespace FaceRecognition_Database.Views
 {
@@ -48,7 +38,7 @@ namespace FaceRecognition_Database.Views
 		{
 			InitializeComponent();
 			Con = con;
-			cbWindows.ItemsSource = ScreenCapture.GetWindowsTitles();
+			//cbWindows.ItemsSource = ScreenCapture.GetWindowsTitles();
 			if (!File.Exists(HaarCascadePath))
 			{
 				string text = "Cannot find Haar cascade data file:\n\n";
@@ -66,24 +56,26 @@ namespace FaceRecognition_Database.Views
 			FoundFaces.Clear();
 			LoadDB();
 			Image<Bgr, Byte> windowImage = null;
-			if ((sender as Button).Name == "btnFindFaceDesktop") windowImage = ScreenCapture.GetDesktopImage().ToImage<Bgr,Byte>();
-			else
-				try
-				{
-					if (cbWindows.SelectedItem != null)
-					windowImage = (ScreenCapture.GetWindowCaptureAsBitmap(cbWindows.SelectedValue.ToString()).ToImage<Bgr, byte>());
-				}
-				catch (Exception exception)
-				{
-					MessageBox.Show(exception.Message);
-				}
+			windowImage = ScreenCapture.GetDesktopImage().ToImage<Bgr, Byte>();
+
+			//if ((sender as Button).Name == "btnFindFaceDesktop") windowImage = ScreenCapture.GetDesktopImage().ToImage<Bgr, Byte>();
+			//else
+			//	try
+			//	{
+			//		if (cbWindows.SelectedItem != null)
+			//			windowImage = (ScreenCapture.GetWindowCaptureAsBitmap(cbWindows.SelectedValue.ToString()).ToImage<Bgr, byte>());
+			//	}
+			//	catch (Exception exception)
+			//	{
+			//		MessageBox.Show(exception.Message);
+			//	}
 
 			if (windowImage != null)
 			{
 				try
 				{//for emgu cv bug
 					Image<Gray, byte> grayframe = windowImage.Convert<Gray, byte>();
-					
+
 					System.Drawing.Rectangle[] faces = HaarCascade.DetectMultiScale(grayframe, 1.2, 5, new System.Drawing.Size(50, 50), new System.Drawing.Size(200, 200));
 
 					//detect face
@@ -106,7 +98,7 @@ namespace FaceRecognition_Database.Views
 				imgFoundPhoto.Source = BitmapToImageSource
 					.Get(SelectedFace.ToBitmap());
 				UpdateNumberOfFaces(FoundFaces.IndexOf(SelectedFace), FoundFaces.Count);
-				
+
 			}
 			FaceRecognition(SelectedFace);
 			lblFaceName.Content = FaceName;
@@ -120,7 +112,11 @@ namespace FaceRecognition_Database.Views
 			if (FoundFaces.Count > 0)
 			{
 				//Eigen Face Algorithm
-				if (StudentsDB.Count == 0) FaceName = "DataBase is Empty";
+				if (StudentsDB.Count == 0)
+				{
+					FaceName = "DataBase is Empty";
+					MessageBox.Show("База данных пуста");
+				}
 				else
 				{
 					if(selectedFace != null)
@@ -138,13 +134,13 @@ namespace FaceRecognition_Database.Views
 							//FaceName = "Not in the Base";
 						}
 					}
-
 				}
 				imgFoundPhoto.Source = BitmapToImageSource.Get(selectedFace.ToBitmap());
 			}
 			else
 			{
-				FaceName = "Please Add Face";
+				FaceName = "Лица не найдены";
+				MessageBox.Show("Лица не найдены");
 			}
 		}
 
@@ -229,28 +225,35 @@ namespace FaceRecognition_Database.Views
 
 		private void BtnAddFace_OnClick(object sender, RoutedEventArgs e)
 		{
-			WindowAddFace windowAddFace = new WindowAddFace(SelectedFace);
-			if (windowAddFace.ShowDialog() == true)
+			if (FoundFaces.Count > 0)
 			{
-				try
+				WindowAddFace windowAddFace = new WindowAddFace(SelectedFace);
+				if (windowAddFace.ShowDialog() == true)
 				{
-					StudentsDB.First(x => x.Surname == windowAddFace.NewStudent.Surname &&
-					                      x.Name == windowAddFace.NewStudent.Name &&
-					                      x.Patronymic == windowAddFace.NewStudent.Patronymic);
-					MessageBox.Show("Студент с такими ФИО уже есть в базе");
+					try
+					{
+						StudentsDB.First(x => x.Surname == windowAddFace.NewStudent.Surname &&
+						                      x.Name == windowAddFace.NewStudent.Name &&
+						                      x.Patronymic == windowAddFace.NewStudent.Patronymic);
+						MessageBox.Show("Студент с такими ФИО уже есть в базе");
+					}
+					catch (Exception exception)
+					{ //if user is not found
+						windowAddFace.NewStudent.ID = GetUniqueId(FacesDBIDs);
+						if (SQLCommands.InsertStudent(windowAddFace.NewStudent))
+							MessageBox.Show("Лицо добавлено в базу");
+						LoadDB();
+					}
+
 				}
-				catch (Exception exception)
-				{ //if user is not found
-					windowAddFace.NewStudent.ID = GetUniqueId(FacesDBIDs);
-					if(SQLCommands.InsertStudent(windowAddFace.NewStudent))
-						MessageBox.Show("Лицо добавлено в базу");
-					LoadDB();
+				else
+				{
+					MessageBox.Show("Лицо не было добавлено!");
 				}
-			
 			}
 			else
 			{
-				MessageBox.Show("Лицо не было добавлено!");
+				MessageBox.Show("Не найдено лиц для добавления!");
 			}
 
 		}

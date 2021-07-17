@@ -22,7 +22,7 @@
                 <TextBox x:Name="tbName" DockPanel.Dock="Top" Margin="4"></TextBox>
                 <TextBox x:Name="tbPatronymic" DockPanel.Dock="Top" Margin="4"></TextBox>
         <Button DockPanel.Dock="Top" Padding="8,4" Height="32" Margin="0,16"
-                x:Name="btnAddFace" Click="BtnAddFace_OnClick">Добавить лицо</Button>
+                x:Name="btnAddStudentFace" Click="BtnAddFace_OnClick">Добавить лицо</Button>
         <Button IsCancel="True" DockPanel.Dock="Top" VerticalAlignment="Top" Height="32">Отмена</Button>
             </DockPanel>
 </DockPanel>

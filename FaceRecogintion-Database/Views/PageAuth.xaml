@@ -36,7 +36,7 @@
                        Width="200" Height="Auto" Margin="0,40,0,16">
                 <Label FontSize="14" FontWeight="Bold" Foreground="White"
                        DockPanel.Dock="Top">Введите пароль</Label>
-                <PasswordBox x:Name="tbPassword" FocusManager.FocusedElement="{Binding ElementName=tbPassword}"></PasswordBox>
+                <PasswordBox x:Name="pbPassword" MaxLength="50" FocusManager.FocusedElement="{Binding ElementName=pbPassword}"></PasswordBox>
             </DockPanel>
         </Viewbox>
 

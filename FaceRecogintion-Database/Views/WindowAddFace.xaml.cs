@@ -1,17 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FaceRecognition_Database.Models;
@@ -25,6 +13,7 @@ namespace FaceRecogintion_Database.Views
 	public partial class WindowAddFace : Window
 	{
 		private Image<Gray, Byte> FacePhoto;
+		private int maxFieldLength = 50;
 		public Student NewStudent { get; set; }
 		public WindowAddFace(Image<Gray, Byte> facePhoto)
 		{
@@ -37,8 +26,14 @@ namespace FaceRecogintion_Database.Views
 		{
 			if (tbName.Text != "" && tbSurname.Text != "" && tbPatronymic.Text != "")
 			{
-				NewStudent = new Student(0, tbSurname.Text, tbName.Text, tbPatronymic.Text, FacePhoto);
-				this.DialogResult = true;
+				if (tbName.Text.Length > maxFieldLength || tbSurname.Text.Length > maxFieldLength
+				                                 || tbPatronymic.Text.Length > maxFieldLength)
+					MessageBox.Show($"Одно из полей привысило максимальную длину поля ({maxFieldLength})");
+				else
+				{
+					NewStudent = new Student(0, tbSurname.Text, tbName.Text, tbPatronymic.Text, FacePhoto);
+					this.DialogResult = true;
+				}
 			}
 			else MessageBox.Show("Заполните все поля!");
 		}

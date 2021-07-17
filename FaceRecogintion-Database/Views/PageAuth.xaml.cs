@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using DevExpress.Mvvm;
 using FaceRecognition_Database.Views;
 
 namespace FaceRecognition_Database
@@ -35,7 +23,17 @@ namespace FaceRecognition_Database
 			con = new DBConnection();
 			try
 			{
-				if (con.Open(tbPassword.Password))
+				if (pbPassword.Password.Length == 0)
+				{
+					MessageBox.Show("Введите пароль");
+					throw new Exception("Не введён пароль");
+				}
+				if (pbPassword.Password.Length < 6)
+				{
+					MessageBox.Show("Пароль меньше шести символов");
+					throw new Exception("Пароль меньше шести символов");
+				}
+				if (con.Open(pbPassword.Password))
 				{
 					pageMain = new PageMain(con);
 					NavigationService.Navigate(pageMain);
@@ -44,7 +42,7 @@ namespace FaceRecognition_Database
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex);
-				throw;
+
 			}
 		}
 		

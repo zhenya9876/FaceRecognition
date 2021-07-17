@@ -2,13 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Interop;
 using System.Runtime.InteropServices;
-using System.Windows.Media.Imaging;
-using System.Windows;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 
 namespace FaceRecognition_Database
 {
@@ -36,57 +30,57 @@ namespace FaceRecognition_Database
 	        return FindWindow(default(string), caption);
         }
 
-        public static Bitmap GetWindowCaptureAsBitmap(string windowTitle)
-        {
-	        SIZE size;
-            IntPtr hWnd = IntPtr.Zero;
-            PlatformInvokeUSER32.RECT rc = new PlatformInvokeUSER32.RECT();
-	        Bitmap bitmap = new Bitmap(1,1);
-            try
-            {
-		        hWnd = FindWindow(windowTitle);
-		        PlatformInvokeUSER32.ShowWindow(hWnd, 1);
-                PlatformInvokeUSER32.SetForegroundWindow(hWnd);
-		        Thread.Sleep(100);
-                PlatformInvokeUSER32.GetWindowRect(hWnd, out rc);
-		        size.cx = rc.Right - rc.Left;
-		        size.cy = rc.Bottom - rc.Top;
-                if (hWnd.ToInt32() == 0 || size.cx ==0 || size.cy == 0) 
-	                throw new Exception("Process has no window!");
-                // create a bitmap from the visible clipping bounds of 
-                //the graphics object from the window
-                bitmap = new Bitmap(size.cx, size.cy);
+        //public static Bitmap GetWindowCaptureAsBitmap(string windowTitle)
+        //{
+	       // SIZE size;
+        //    IntPtr hWnd = IntPtr.Zero;
+        //    PlatformInvokeUSER32.RECT rc = new PlatformInvokeUSER32.RECT();
+	       // Bitmap bitmap = new Bitmap(1,1);
+        //    try
+        //    {
+		      //  hWnd = FindWindow(windowTitle);
+		      //  PlatformInvokeUSER32.ShowWindow(hWnd, 1);
+        //        PlatformInvokeUSER32.SetForegroundWindow(hWnd);
+		      //  Thread.Sleep(100);
+        //        PlatformInvokeUSER32.GetWindowRect(hWnd, out rc);
+		      //  size.cx = rc.Right - rc.Left;
+		      //  size.cy = rc.Bottom - rc.Top;
+        //        if (hWnd.ToInt32() == 0 || size.cx ==0 || size.cy == 0) 
+	       //         throw new Exception("Process has no window!");
+        //        // create a bitmap from the visible clipping bounds of 
+        //        //the graphics object from the window
+        //        bitmap = new Bitmap(size.cx, size.cy);
 
-                // create a graphics object from the bitmap
-                Graphics gfxBitmap = Graphics.FromImage(bitmap);
+        //        // create a graphics object from the bitmap
+        //        Graphics gfxBitmap = Graphics.FromImage(bitmap);
 
-                // get a device context for the bitmap
-                IntPtr hdcBitmap = gfxBitmap.GetHdc();
+        //        // get a device context for the bitmap
+        //        IntPtr hdcBitmap = gfxBitmap.GetHdc();
 
-                // get a device context for the window
-                IntPtr hdcWindow = PlatformInvokeUSER32.GetWindowDC(hWnd.ToInt32());
+        //        // get a device context for the window
+        //        IntPtr hdcWindow = PlatformInvokeUSER32.GetWindowDC(hWnd.ToInt32());
 
-                // bitblt the window to the bitmap
-                PlatformInvokeGDI32.BitBlt(hdcBitmap, 0, 0, size.cx, size.cy,
-	                hdcWindow, 0, 0, (int)PlatformInvokeGDI32.SRCCOPY);
+        //        // bitblt the window to the bitmap
+        //        PlatformInvokeGDI32.BitBlt(hdcBitmap, 0, 0, size.cx, size.cy,
+	       //         hdcWindow, 0, 0, (int)PlatformInvokeGDI32.SRCCOPY);
 
-                // release the bitmap's device context
-                gfxBitmap.ReleaseHdc(hdcBitmap);
+        //        // release the bitmap's device context
+        //        gfxBitmap.ReleaseHdc(hdcBitmap);
 
 
-                PlatformInvokeUSER32.ReleaseDC(hWnd, hdcWindow);
+        //        PlatformInvokeUSER32.ReleaseDC(hWnd, hdcWindow);
 
-                // dispose of the bitmap's graphics object
-                gfxBitmap.Dispose();
-                PlatformInvokeUSER32.SetForegroundWindow(Process.GetCurrentProcess().MainWindowHandle);
-            }
-            catch (Exception ex)
-            {
-	            MessageBox.Show(ex.Message);
-            }
-            // return the bitmap of the window
-	        return bitmap;
-        }
+        //        // dispose of the bitmap's graphics object
+        //        gfxBitmap.Dispose();
+        //        PlatformInvokeUSER32.SetForegroundWindow(Process.GetCurrentProcess().MainWindowHandle);
+        //    }
+        //    catch (Exception ex)
+        //    {
+	       //     MessageBox.Show(ex.Message);
+        //    }
+        //    // return the bitmap of the window
+	       // return bitmap;
+        //}
         public static Bitmap GetDesktopImage()
         {
             SIZE size;
@@ -136,19 +130,6 @@ namespace FaceRecognition_Database
             }
             //If hBitmap is null, retun null.
             return null;
-        }
-
-        public static Rect GetWindowRectangle()
-        {
-            //Process proc = Process.GetCurrentProcess();
-            //proc.WaitForInputIdle();
-            //IntPtr ptr = proc.MainWindowHandle;
-            Rect rect = new Rect(new System.Windows.Point(Application.Current.MainWindow.Left, Application.Current.MainWindow.Top)
-                , new System.Windows.Size(Application.Current.MainWindow.ActualWidth, Application.Current.MainWindow.ActualHeight));
-            //PlatformInvokeUSER32.GetWindowRect(ptr, ref rect);
-            //return new Rectangle (new System.Drawing.Point((int)rect.Location.X, (int)rect.Location.Y), 
-            // new System.Drawing.Size((int)rect.Size.Height, (int)rect.Size.Height));
-            return rect;
         }
         #endregion
     }
