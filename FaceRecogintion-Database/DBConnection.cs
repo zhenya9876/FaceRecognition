@@ -16,11 +16,11 @@ namespace FaceRecognition_Database
         static string database = "studentsdb";
         static string userDB = "root";
         
-        public bool Open(string password)
+        public bool Open(string login,string password)
         {
             try
             {
-                string strProvider = "server=" + host + ";Database=" + database + ";User ID=" + userDB + ";Password=" + password;
+                string strProvider = "server=" + host + ";Database=" + database + ";User ID=" + login + ";Password=" + password;
                 conn = new MySqlConnection(strProvider);
                 conn.Open();
                 return true;

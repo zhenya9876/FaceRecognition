@@ -15,13 +15,15 @@
     <DockPanel DockPanel.Dock="Left">
         <Label DockPanel.Dock="Top">Фамилия</Label>
                 <Label DockPanel.Dock="Top">Имя</Label>
-                <Label DockPanel.Dock="Top">Отчество</Label>
-    </DockPanel>
+        <Label DockPanel.Dock="Top">Отчество</Label>
+                <Label DockPanel.Dock="Top">Группа</Label>
+</DockPanel>
     <DockPanel DockPanel.Dock="Right">
                 <TextBox x:Name="tbSurname" DockPanel.Dock="Top" Margin="4"></TextBox>
                 <TextBox x:Name="tbName" DockPanel.Dock="Top" Margin="4"></TextBox>
                 <TextBox x:Name="tbPatronymic" DockPanel.Dock="Top" Margin="4"></TextBox>
-        <Button DockPanel.Dock="Top" Padding="8,4" Height="32" Margin="0,16"
+                <ComboBox x:Name="cbGroup" DockPanel.Dock="Top" Margin="4"></ComboBox>
+                <Button DockPanel.Dock="Top" Padding="8,4" Height="32" Margin="0,16"
                 x:Name="btnAddStudentFace" Click="BtnAddFace_OnClick">Добавить лицо</Button>
         <Button IsCancel="True" DockPanel.Dock="Top" VerticalAlignment="Top" Height="32">Отмена</Button>
             </DockPanel>

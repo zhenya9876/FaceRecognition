@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Emgu.CV;
@@ -14,13 +15,14 @@ namespace FaceRecogintion_Database
 	{
 		private Student CurrentStudent;
 		private object Sender;
-		public StudentControl(object sender, Student student)
+		public StudentControl(object sender, Student student, Dictionary<int,string> groups)
 		{
 			CurrentStudent = student;
 			Sender = sender;
 			InitializeComponent();
 			this.lblStudentDB.Content = $"{CurrentStudent.Surname} {CurrentStudent.Name} {CurrentStudent.Patronymic}";
 			this.imgStudentDB.Source = BitmapToImageSource.Get(CurrentStudent.Photo.ToBitmap());
+			if(groups.Count > 0)this.lblGroupDB.Content = $"{groups[CurrentStudent.GroupID]}";
 			this.btnDeleteStudentDB.Click += OnStudentDeleteClick;
 		}
 

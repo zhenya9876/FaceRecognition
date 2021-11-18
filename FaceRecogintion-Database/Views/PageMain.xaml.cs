@@ -21,7 +21,10 @@ namespace FaceRecognition_Database.Views
 	public partial class PageMain : Page
 	{
 		private DBConnection Con;
+		public int TeacherID =0;
 		public List<Student> StudentsDB;
+		public Dictionary<int,string> GroupsDB;
+		public Dictionary<int, int> GroupTeacherDB;
 		private List<Image<Gray, Byte>> FoundFaces;
 		private Dictionary<int,double> FoundFacesIDsLikeness;
 		private VectorOfMat FacesDB;
@@ -34,10 +37,11 @@ namespace FaceRecognition_Database.Views
 		private string HaarCascadePath = "haarcascade_frontalface_default.xml";
 		private Image<Bgr, Byte> BgrFrame = null;
 
-		public PageMain(DBConnection con)
+		public PageMain(DBConnection con, string teacher)
 		{
 			InitializeComponent();
 			Con = con;
+			if (teacher != "") TeacherID = SQLCommands.SelectTeacherID(teacher);
 			//cbWindows.ItemsSource = ScreenCapture.GetWindowsTitles();
 			if (!File.Exists(HaarCascadePath))
 			{
@@ -155,7 +159,18 @@ namespace FaceRecognition_Database.Views
 			{
 				MessageBox.Show(ex.Message);
 			}
+			try {
+				GroupsDB = SQLCommands.SelectGroups(); }
+			catch (Exception ex) { MessageBox.Show(ex.Message); }
 
+			try
+			{
+				GroupTeacherDB = SQLCommands.SelectGroupTeacher();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
 			FillDataBaseDP();
 			FacesDB = new VectorOfMat(StudentsDB.Count);
 			FacesDBIDs = new VectorOfInt(StudentsDB.Count);
@@ -176,12 +191,15 @@ namespace FaceRecognition_Database.Views
 			dpDataBase.Children.Clear();
 			foreach (Student student in StudentsDB)
 			{
-				StudentControl sc = new StudentControl(this, student);
+				if (GroupTeacherDB[student.GroupID] == GroupTeacherDB.First(x => x.Value == TeacherID).Value)
+				{ 
+					StudentControl sc = new StudentControl(this, student, GroupsDB);
 				DockPanel.SetDock(sc, Dock.Top);
 				dpDataBase.Children.Add(sc);
+				}
 			}
-			
 		}
+		
 
 		private void BtnPrevFace_OnClick(object sender, RoutedEventArgs e)
 		{
@@ -227,7 +245,7 @@ namespace FaceRecognition_Database.Views
 		{
 			if (FoundFaces.Count > 0)
 			{
-				WindowAddFace windowAddFace = new WindowAddFace(SelectedFace);
+				WindowAddFace windowAddFace = new WindowAddFace(SelectedFace,GroupsDB);
 				if (windowAddFace.ShowDialog() == true)
 				{
 					try

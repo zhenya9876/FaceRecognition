@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -15,13 +16,14 @@ namespace FaceRecogintion_Database
 	{
 		public static bool InsertStudent(Student newStudent)
 		{
-			string cmdString = $"insert students values(@id, @surname, @name, @patronymic, @photo)";
+			string cmdString = $"insert students values(@id, @surname, @name, @patronymic, @photo, @group_id)";
 			MySqlCommand cmd = new MySqlCommand(cmdString, DBConnection.conn);
 			cmd.Parameters.Add("@id", MySqlDbType.Int32);
 			cmd.Parameters.Add("@surname", MySqlDbType.VarChar, 50);
 			cmd.Parameters.Add("@name", MySqlDbType.VarChar, 50);
 			cmd.Parameters.Add("@patronymic", MySqlDbType.VarChar, 50);
 			cmd.Parameters.Add("@photo", MySqlDbType.LongBlob);
+			cmd.Parameters.Add("@group_id", MySqlDbType.Int32);
 			cmd.Parameters["@id"].Value = newStudent.ID;
 			cmd.Parameters["@surname"].Value = newStudent.Surname;
 			cmd.Parameters["@name"].Value = newStudent.Name;
@@ -30,6 +32,7 @@ namespace FaceRecogintion_Database
 			ImageConverter converter = new ImageConverter();
 			b = (byte[])converter.ConvertTo(newStudent.Photo.ToBitmap(), typeof(byte[]));
 			cmd.Parameters["@photo"].Value = b;
+			cmd.Parameters["@group_id"].Value = newStudent.GroupID;
 			int RowsAffected = cmd.ExecuteNonQuery();
 			if (RowsAffected > 0)
 			{
@@ -54,7 +57,7 @@ namespace FaceRecogintion_Database
 
 		public static List<Student> SelectStudents()
 		{
-			string cmdString = $"select * from students order by id";
+			string cmdString = $"select * from students order by id;";
 			DataTable dt = DBConnection.ExecuteDataSet(cmdString);
 
 			List<Student> students = new List<Student>();
@@ -68,9 +71,46 @@ namespace FaceRecogintion_Database
 				}
 				Image<Gray,byte> photo = bmp.ToImage<Gray, byte>();
 				students.Add(new Student((int)dr["id"],dr["surname"].ToString(), dr["name"].ToString(), 
-					dr["patronymic"].ToString(),photo));
+					dr["patronymic"].ToString(),photo,(int)dr["group_id"]));
 			}
 			return students;
+		}
+		public static Dictionary<int,string> SelectGroups()
+		{
+			Dictionary<int, string> grps = new Dictionary<int, string>();
+			string cmdString = $"select * from grps;";
+			try
+			{
+				DataTable dt = DBConnection.ExecuteDataSet(cmdString);
+				foreach (DataRow dr in dt.Rows)
+				{
+					grps.Add((int)dr["id"], dr["group_name"].ToString());
+				}
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
+			
+			return grps;
+		}
+		public static Dictionary<int, int> SelectGroupTeacher()
+		{
+			string cmdString = $"select * from group_teacher;";
+			DataTable dt = DBConnection.ExecuteDataSet(cmdString);
+
+			Dictionary<int, int> groupTeacher = new Dictionary<int, int>();
+			foreach (DataRow dr in dt.Rows)
+			{
+				groupTeacher.Add((int)dr["group_id"], (int)dr["teacher_id"]);
+			}
+			return groupTeacher;
+		}
+		public static int SelectTeacherID(string login)
+		{
+			string cmdString = $"select id from teachers where login = \'{login}\';";
+			DataTable dt = DBConnection.ExecuteDataSet(cmdString);
+			return (int)dt.Rows[0]["id"];
 		}
 	}
 }

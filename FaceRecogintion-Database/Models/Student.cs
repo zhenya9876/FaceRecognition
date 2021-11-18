@@ -11,14 +11,16 @@ namespace FaceRecognition_Database.Models
 		public string Name { get; set; }
 		public string Patronymic { get; set; }
 		public Image<Gray, Byte> Photo { get; set; }
+		public int GroupID { get; set; }
 
-		public Student(int id, string surname, string name, string patronymic, Image<Gray, Byte> photo)
+		public Student(int id, string surname, string name, string patronymic, Image<Gray, Byte> photo, int groupID)
 		{
 			ID = id;
 			Surname = surname;
 			Name = name;
 			Patronymic = patronymic;
 			Photo = photo;
+			GroupID = groupID;
 		}
 	}
 }

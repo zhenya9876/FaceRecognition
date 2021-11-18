@@ -35,8 +35,11 @@
             <DockPanel VerticalAlignment="Bottom" 
                        Width="200" Height="Auto" Margin="0,40,0,16">
                 <Label FontSize="14" FontWeight="Bold" Foreground="White"
-                       DockPanel.Dock="Top">Введите пароль</Label>
-                <PasswordBox x:Name="pbPassword" MaxLength="50" FocusManager.FocusedElement="{Binding ElementName=pbPassword}"></PasswordBox>
+                       DockPanel.Dock="Top">Логин</Label>
+                <TextBox x:Name="tbLogin" DockPanel.Dock="Top" AcceptsReturn="False" MaxLength="32"></TextBox>
+                <Label FontSize="14" FontWeight="Bold" Foreground="White"
+                       DockPanel.Dock="Top">Пароль</Label>
+                <PasswordBox x:Name="pbPassword" DockPanel.Dock="Bottom" MaxLength="32" FocusManager.FocusedElement="{Binding ElementName=pbPassword}"></PasswordBox>
             </DockPanel>
         </Viewbox>
 

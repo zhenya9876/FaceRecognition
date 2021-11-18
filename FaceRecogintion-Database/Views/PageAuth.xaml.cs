@@ -15,7 +15,7 @@ namespace FaceRecognition_Database
 		public PageAuth()
 		{
 			InitializeComponent();
-			pageMain = new PageMain(con);
+			pageMain = new PageMain(con,"");
 		}
 
 		private void BtnLogin_OnClick(object sender, RoutedEventArgs e)
@@ -33,9 +33,14 @@ namespace FaceRecognition_Database
 					MessageBox.Show("Пароль меньше шести символов");
 					throw new Exception("Пароль меньше шести символов");
 				}
-				if (con.Open(pbPassword.Password))
+				if (tbLogin.Text.Length == 0)
 				{
-					pageMain = new PageMain(con);
+					MessageBox.Show("Введите логин");
+					throw new Exception("Не введён логин");
+				}
+				if (con.Open(tbLogin.Text,pbPassword.Password))
+				{
+					pageMain = new PageMain(con,tbLogin.Text);
 					NavigationService.Navigate(pageMain);
 				}
 			}

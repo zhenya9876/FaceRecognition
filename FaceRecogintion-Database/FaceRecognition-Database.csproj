@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\PageMain1.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevExpressMvvm" Version="20.2.3" />
     <PackageReference Include="Emgu.CV" Version="4.5.1.4349" />
     <PackageReference Include="Emgu.CV.Bitmap" Version="4.5.1.4349" />

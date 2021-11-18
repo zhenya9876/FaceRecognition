@@ -11,6 +11,7 @@
         <Image x:Name="imgStudentDB" Width="100" Height="100" DockPanel.Dock="Left" Margin="8"></Image>
  
             <Label x:Name="lblStudentDB" FontSize="18" DockPanel.Dock="Left"></Label>
+        <Label x:Name="lblGroupDB" FontSize="18" DockPanel.Dock="Bottom"></Label>
             <Button x:Name="btnDeleteStudentDB" DockPanel.Dock="Right" Margin="16" FontSize="16" 
                     HorizontalAlignment="Right" Padding="30,8">Удалить</Button>
         

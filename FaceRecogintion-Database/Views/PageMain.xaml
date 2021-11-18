@@ -24,7 +24,7 @@
                             <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>-->
                     <Button DockPanel.Dock="Top" x:Name="btnFindFaceDesktop" Padding="8,4" Click="BtnFindFace_OnClick">Найти лица на всём экране</Button>
                             <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
-                        <Button DockPanel.Dock="Top" x:Name="btnAddFace" Padding="8,4" Click="BtnAddFace_OnClick">Добавить выбранное лицо</Button>
+                    <Button DockPanel.Dock="Top" x:Name="btnAddFace" Padding="8,4" Click="BtnAddFace_OnClick">Добавить выбранное лицо</Button>
                     </DockPanel>
                 <DockPanel Grid.Column="1" >
                     <Label x:Name="lblNumOfFaces" DockPanel.Dock="Top" HorizontalAlignment="Center">0 из 0</Label>
@@ -34,6 +34,8 @@
                             <Button DockPanel.Dock="Top" x:Name="btnPrevFace" Padding="8,4" Margin="4" Click="BtnPrevFace_OnClick">Предыдущее</Button>
                             <Button DockPanel.Dock="Top" x:Name="btnNextFace" Padding="8,4" Margin="4" Click="BtnNextFace_OnClick">Следующее</Button>
                         </StackPanel>
+                        <Separator Height="4" DockPanel.Dock="Top" Visibility="Hidden"/>
+                        
                     </DockPanel>
 
                     <Image x:Name="imgFoundPhoto" 
